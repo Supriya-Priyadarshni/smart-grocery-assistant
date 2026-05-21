@@ -8,5 +8,6 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "cache")
 public class CacheProperties {
+    private boolean enabled = true;
     private int recommendationTtlMinutes = 30;
 }

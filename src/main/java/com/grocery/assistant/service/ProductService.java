@@ -66,6 +66,8 @@ public class ProductService {
 
         if ("price".equalsIgnoreCase(criteria.getSortBy())) {
             products.sort(Comparator.comparing(Product::getPriceInr));
+        } else if ("protein".equalsIgnoreCase(criteria.getSortBy())) {
+            products.sort(Comparator.comparing(Product::getProteinG).reversed());
         }
 
         return products.stream()

@@ -1,6 +1,6 @@
 package com.grocery.assistant.controller;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,11 +11,16 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RestController
-@RequiredArgsConstructor
 public class HealthController {
 
     private final DataSource dataSource;
     private final RedisConnectionFactory redisConnectionFactory;
+
+    public HealthController(DataSource dataSource,
+                            @Autowired(required = false) RedisConnectionFactory redisConnectionFactory) {
+        this.dataSource = dataSource;
+        this.redisConnectionFactory = redisConnectionFactory;
+    }
 
     @GetMapping("/health")
     public Map<String, Object> health() {
@@ -35,6 +40,9 @@ public class HealthController {
     }
 
     private String checkRedis() {
+        if (redisConnectionFactory == null) {
+            return "DISABLED";
+        }
         try {
             String pong = redisConnectionFactory.getConnection().ping();
             return "PONG".equalsIgnoreCase(pong) ? "UP" : "DOWN";

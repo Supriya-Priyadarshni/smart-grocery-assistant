@@ -16,14 +16,14 @@ public class SearchService {
     private static final int DEFAULT_LIMIT = 10;
     private static final int MAX_LIMIT = 20;
 
-    private final SearchCacheService cacheService;
+    private final SearchCache cache;
     private final LlmService llmService;
     private final ProductService productService;
 
     public SearchResponse search(String query, Integer limit) {
         int resultLimit = normalizeLimit(limit);
 
-        return cacheService.get(query)
+        return cache.get(query)
                 .map(cached -> SearchResponse.builder()
                         .query(query)
                         .reasoning(cached.getReasoning())
@@ -53,7 +53,7 @@ public class SearchService {
                 .tookMs(System.currentTimeMillis() - start)
                 .build();
 
-        cacheService.put(query, response);
+        cache.put(query, response);
         return response;
     }
 
